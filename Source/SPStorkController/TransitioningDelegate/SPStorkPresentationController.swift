@@ -103,6 +103,8 @@ public class SPStorkPresentationController: UIPresentationController, UIGestureR
         }
         return CGRect(x: 0, y: containerView.bounds.height - height, width: containerView.bounds.width, height: height)
     }
+
+    private var isAccessibilityOverlayLoaded = false
     
     override public func presentationTransitionWillBegin() {
         super.presentationTransitionWillBegin()
@@ -129,7 +131,7 @@ public class SPStorkPresentationController: UIPresentationController, UIGestureR
             self.indicatorView.topAnchor.constraint(equalTo: presentedView.topAnchor, constant: 12).isActive = true
             self.indicatorView.mode = self.indicatorMode
 
-            if UIAccessibility.isVoiceOverRunning {
+            if UIAccessibility.isVoiceOverRunning, !isAccessibilityOverlayLoaded {
                 let accessibleIndicatorOverlayButton = UIButton(type: .custom)
                 accessibleIndicatorOverlayButton.addTarget(self, action: #selector(self.tapIndicator), for: .touchUpInside)
                 accessibleIndicatorOverlayButton.accessibilityLabel = closeTitle
@@ -141,6 +143,7 @@ public class SPStorkPresentationController: UIPresentationController, UIGestureR
                     accessibleIndicatorOverlayButton.topAnchor.constraint(equalTo: presentedView.topAnchor),
                     accessibleIndicatorOverlayButton.bottomAnchor.constraint(equalTo: self.indicatorView.bottomAnchor),
                 ])
+                isAccessibilityOverlayLoaded = true
             }
         }
         self.updateLayoutIndicator()
